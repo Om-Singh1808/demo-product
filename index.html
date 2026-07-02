@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Reverie® — A Creative Studio for Impossible Ideas</title>
+  <meta name="description" content="Reverie is a motion-first creative studio building playful, dreamlike web experiences. One scroll takes you from dawn to midnight.">
+  <meta property="og:title" content="Reverie® — A Creative Studio for Impossible Ideas">
+  <meta property="og:description" content="Playful, dreamlike, motion-first web experiences. Scroll from dawn to midnight.">
+  <meta name="theme-color" content="#0b0820">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9C%A6%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@1,9..144,300..500&family=Instrument+Sans:wght@400;500;600&family=Space+Mono&family=Syne:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<noscript>
+  <style>
+    #world{position:static!important}
+    #loader,#cursor,#hint,#hud-clock,#bar,#stars,#fx,#grain{display:none!important}
+    [data-reveal],[data-split],.hero-inner,.hero-cta{opacity:1!important;transform:none!important}
+    body{background:#14102e;color:#efe9ff}
+  </style>
+</noscript>
+
+<!-- scroll height proxy (the world itself is a fixed, translated layer) -->
+<div id="spacer" aria-hidden="true"></div>
+
+<!-- ambient backdrop layers -->
+<div id="sky" aria-hidden="true"></div>
+<div id="celestial" aria-hidden="true">
+  <div id="sun"></div>
+  <div id="moon"><i class="moon-core"></i><i class="moon-crater c1"></i><i class="moon-crater c2"></i></div>
+</div>
+<canvas id="stars" aria-hidden="true"></canvas>
+<div id="auroras" aria-hidden="true"><i class="aurora au1"></i><i class="aurora au2"></i></div>
+<div class="clouds" id="cloudsFar" aria-hidden="true"></div>
+<div class="clouds" id="cloudsMid" aria-hidden="true"></div>
+
+<!-- ✦ the world ✦ -->
+<main id="world">
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-inner" data-speed="0.86">
+      <p class="eyebrow hero-eyebrow">Reverie® — motion-first creative studio</p>
+      <h1 class="hero-title">
+        <span class="line clip"><span class="t-solid" data-split="chars">WE BUILD</span></span>
+        <span class="line clip"><em class="t-serif" data-split="chars">impossible</em></span>
+        <span class="line clip"><span class="t-solid" data-split="chars">WEBSITES</span></span>
+      </h1>
+      <p class="hero-sub">Playful, dreamlike web experiences with motion at the core.<br>
+      One scroll takes you from dawn to midnight — go on, try it.</p>
+      <div class="hero-cta">
+        <a class="btn btn-solid magnetic" href="#dreams" data-cursor="link"><span class="btn-txt">See the dreams</span></a>
+        <a class="btn btn-ghost magnetic" href="#contact" data-cursor="link"><span class="btn-txt">Start a project ✦</span></a>
+      </div>
+    </div>
+    <div class="hero-orbs" aria-hidden="true">
+      <div class="orb-wrap" data-depth="0.9"  style="--ox:6vw;  --oy:20vh"><i class="orb o1"></i></div>
+      <div class="orb-wrap" data-depth="0.45" style="--ox:80vw; --oy:14vh"><i class="orb o2"></i></div>
+      <div class="orb-wrap" data-depth="1.5"  style="--ox:72vw; --oy:66vh"><i class="orb o3"></i></div>
+      <div class="orb-wrap" data-depth="0.7"  style="--ox:12vw; --oy:64vh"><i class="ring-deco"></i></div>
+      <div class="orb-wrap" data-depth="1.1"  style="--ox:88vw; --oy:42vh"><i class="spark">✦</i></div>
+      <div class="orb-wrap" data-depth="0.6"  style="--ox:24vw; --oy:10vh"><i class="spark s2">✦</i></div>
+      <div class="orb-wrap" data-depth="1.3"  style="--ox:44vw; --oy:78vh"><i class="spark s3">✦</i></div>
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee" aria-hidden="true">
+    <div class="mq-track">
+      <span class="mq-item solid">Parallax worlds</span><span class="mq-star">✦</span>
+      <span class="mq-item outline">Lucid scrolling</span><span class="mq-star">✦</span>
+      <span class="mq-item solid">Motion graphics</span><span class="mq-star">✦</span>
+      <span class="mq-item outline">Micro-delights</span><span class="mq-star">✦</span>
+      <span class="mq-item solid">3D tilt</span><span class="mq-star">✦</span>
+      <span class="mq-item outline">Magnetic buttons</span><span class="mq-star">✦</span>
+      <span class="mq-item solid">Dream logic</span><span class="mq-star">✦</span>
+      <!-- duplicate for seamless loop -->
+      <span class="mq-item solid">Parallax worlds</span><span class="mq-star">✦</span>
+      <span class="mq-item outline">Lucid scrolling</span><span class="mq-star">✦</span>
+      <span class="mq-item solid">Motion graphics</span><span class="mq-star">✦</span>
+      <span class="mq-item outline">Micro-delights</span><span class="mq-star">✦</span>
+      <span class="mq-item solid">3D tilt</span><span class="mq-star">✦</span>
+      <span class="mq-item outline">Magnetic buttons</span><span class="mq-star">✦</span>
+      <span class="mq-item solid">Dream logic</span><span class="mq-star">✦</span>
+    </div>
+  </div>
+
+  <!-- MANIFESTO — pinned, words reveal as you scroll -->
+  <section id="manifesto" class="pin" data-pin>
+    <div class="pin-stick">
+      <div class="wrap mani-wrap">
+        <p class="eyebrow">01 — Manifesto</p>
+        <p class="mani" id="mani">Most websites are awake. Ours are <em>lucid.</em> We mix motion, story and a little mischief until your brand stops feeling like a page — and starts feeling like a <em>place</em> people never want to leave.</p>
+        <p class="mani-hint">keep scrolling — the words follow you</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CRAFT / SERVICES -->
+  <section id="craft">
+    <div class="wrap">
+      <p class="eyebrow" data-reveal>02 — What we conjure</p>
+      <h2 class="h2" data-reveal data-d="1">Craft, <em>but make it float.</em></h2>
+      <ul class="rows">
+        <li class="row" data-peek="1" data-reveal data-cursor="link">
+          <span class="r-num">01</span>
+          <span class="r-main"><span class="r-title">Immersive websites</span><span class="r-tag">Scroll journeys, parallax worlds, zero boredom.</span></span>
+          <span class="r-arr">→</span>
+        </li>
+        <li class="row" data-peek="2" data-reveal data-d="1" data-cursor="link">
+          <span class="r-num">02</span>
+          <span class="r-main"><span class="r-title">Motion &amp; interaction</span><span class="r-tag">Micro-delights that make cursors curious.</span></span>
+          <span class="r-arr">→</span>
+        </li>
+        <li class="row" data-peek="3" data-reveal data-d="2" data-cursor="link">
+          <span class="r-num">03</span>
+          <span class="r-main"><span class="r-title">Brand universes</span><span class="r-tag">Identities with gravity, color and lore.</span></span>
+          <span class="r-arr">→</span>
+        </li>
+        <li class="row" data-peek="4" data-reveal data-d="3" data-cursor="link">
+          <span class="r-num">04</span>
+          <span class="r-main"><span class="r-title">Playful commerce</span><span class="r-tag">Stores that sell with a wink.</span></span>
+          <span class="r-arr">→</span>
+        </li>
+      </ul>
+    </div>
+    <div id="peek" aria-hidden="true"></div>
+  </section>
+
+  <!-- DREAMS — pinned horizontal gallery -->
+  <section id="dreams" class="pin" data-pin data-gallery>
+    <div class="pin-stick">
+      <div class="wrap gal-head">
+        <div>
+          <p class="eyebrow">03 — Selected dreams</p>
+          <h2 class="h2">Recent <em>reveries</em></h2>
+        </div>
+        <p class="gal-hint">scroll ↓ becomes → here</p>
+      </div>
+      <div id="track">
+
+        <article class="dream tilt" data-cursor="view">
+          <div class="dream-inner">
+            <div class="dream-art art-hotel">
+              <div class="scene">
+                <i class="puff p1"></i><i class="puff p2"></i><i class="puff p3"></i>
+                <i class="balloon"></i><i class="basket"></i>
+                <i class="mini-sun"></i>
+              </div>
+            </div>
+            <div class="dream-meta">
+              <div><span class="d-index">01</span><h3>Cloud Nine Hotel</h3><p>Hospitality, but airborne.</p></div>
+              <span class="d-tags">Web · 3D · Booking</span>
+            </div>
+            <i class="glare"></i>
+          </div>
+        </article>
+
+        <article class="dream tilt" data-cursor="view">
+          <div class="dream-inner">
+            <div class="dream-art art-botany">
+              <div class="scene">
+                <i class="leaf l1"></i><i class="leaf l2"></i><i class="leaf l3"></i>
+                <i class="bloom b1"></i><i class="bloom b2"></i>
+                <i class="glow-pool"></i>
+              </div>
+            </div>
+            <div class="dream-meta">
+              <div><span class="d-index">02</span><h3>Neon Botany</h3><p>A greenhouse that glows back.</p></div>
+              <span class="d-tags">Brand · Web · Motion</span>
+            </div>
+            <i class="glare"></i>
+          </div>
+        </article>
+
+        <article class="dream tilt" data-cursor="view">
+          <div class="dream-inner">
+            <div class="dream-art art-orbit">
+              <div class="scene">
+                <i class="orbit-ring r1"></i><i class="orbit-ring r2"></i>
+                <i class="planet"></i><i class="planet-ring"></i>
+                <i class="sat"></i>
+                <div class="eq"><i></i><i></i><i></i><i></i><i></i></div>
+              </div>
+            </div>
+            <div class="dream-meta">
+              <div><span class="d-index">03</span><h3>Orbit Radio</h3><p>Music broadcast from the moon.</p></div>
+              <span class="d-tags">Web app · Audio · Identity</span>
+            </div>
+            <i class="glare"></i>
+          </div>
+        </article>
+
+        <article class="dream tilt" data-cursor="view">
+          <div class="dream-inner">
+            <div class="dream-art art-arcade">
+              <div class="scene">
+                <i class="retro-sun"></i>
+                <i class="grid-floor"></i>
+              </div>
+            </div>
+            <div class="dream-meta">
+              <div><span class="d-index">04</span><h3>Midnight Arcade</h3><p>Play after dark.</p></div>
+              <span class="d-tags">Campaign · WebGL · Games</span>
+            </div>
+            <i class="glare"></i>
+          </div>
+        </article>
+
+        <article class="dream tilt" data-cursor="view">
+          <div class="dream-inner">
+            <div class="dream-art art-planets">
+              <div class="scene">
+                <i class="paper-orbit"></i>
+                <i class="pp pp1"></i>
+                <i class="pp pp2"><i class="pp-ring"></i></i>
+                <i class="pp pp3 face"></i>
+                <span class="pp-star s1">✦</span><span class="pp-star s2">✦</span>
+              </div>
+            </div>
+            <div class="dream-meta">
+              <div><span class="d-index">05</span><h3>Paper Planets</h3><p>A storybook solar system.</p></div>
+              <span class="d-tags">Editorial · Illustration · Web</span>
+            </div>
+            <i class="glare"></i>
+          </div>
+        </article>
+
+        <article class="dream dream-cta" data-cursor="link" id="yourDream">
+          <div class="dream-inner">
+            <p class="cta-big">Your dream<br><em>here</em> →</p>
+            <p class="cta-small">this slot is reserved for you</p>
+          </div>
+        </article>
+
+      </div>
+      <div class="gal-progress"><i id="galBar"></i></div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section id="stats">
+    <div class="wrap stats-grid">
+      <div class="stat" data-reveal><span class="stat-n"><span class="counter" data-count="37">0</span></span><span class="stat-l">worlds built</span></div>
+      <div class="stat" data-reveal data-d="1"><span class="stat-n"><span class="counter" data-count="214">0</span>%</span><span class="stat-l">avg. sparkle increase</span></div>
+      <div class="stat" data-reveal data-d="2"><span class="stat-n"><span class="counter" data-count="0" data-from="25">25</span></span><span class="stat-l">templates used, ever</span></div>
+      <div class="stat" data-reveal data-d="3"><span class="stat-n"><span class="counter" data-count="inf">1</span></span><span class="stat-l">curiosity</span></div>
+    </div>
+  </section>
+
+  <!-- NIGHT QUOTE -->
+  <section id="night">
+    <div class="wrap night-wrap">
+      <p class="eyebrow" data-reveal>What clients dream about us</p>
+      <blockquote class="quote" data-reveal="blur" data-d="1">“Working with Reverie felt like lucid dreaming — we pointed at something impossible and woke up with it <em>shipped.</em>”</blockquote>
+      <p class="quote-who" data-reveal data-d="2"><i class="avatar">AK</i> Aanya Kapoor — founder, Somewhere Inc.</p>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="wrap contact-wrap">
+      <p class="eyebrow" data-reveal>04 — Wake up with us</p>
+      <h2 class="giant clip"><span class="wave" data-split="chars">LET'S DREAM</span></h2>
+      <p class="giant-em clip"><em class="wave" data-split="chars">together</em></p>
+      <p class="c-sub" data-reveal>Tell us the impossible thing. We'll bring the clouds.</p>
+      <div class="hero-cta" data-reveal data-d="2">
+        <a class="btn btn-solid btn-big magnetic" href="mailto:gautamhridyansh@gmail.com?subject=Let%27s%20build%20a%20dream%20%E2%9C%A6" data-cursor="link"><span class="btn-txt">Start a project ✦</span></a>
+        <button class="btn btn-ghost magnetic" id="copyEmail" data-cursor="link" type="button"><span class="btn-txt">gautamhridyansh@gmail.com</span></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="marquee foot-mq" aria-hidden="true">
+      <div class="mq-track">
+        <span class="mq-item outline">Awake?</span><span class="mq-star">✦</span>
+        <span class="mq-item solid">Let's build</span><span class="mq-star">✦</span>
+        <span class="mq-item outline">Reverie</span><span class="mq-star">✦</span>
+        <span class="mq-item solid">Est. in a dream</span><span class="mq-star">✦</span>
+        <span class="mq-item outline">Awake?</span><span class="mq-star">✦</span>
+        <span class="mq-item solid">Let's build</span><span class="mq-star">✦</span>
+        <span class="mq-item outline">Reverie</span><span class="mq-star">✦</span>
+        <span class="mq-item solid">Est. in a dream</span><span class="mq-star">✦</span>
+      </div>
+    </div>
+    <div class="wrap foot-row">
+      <span>© 2026 Reverie Studio — handcrafted, zero templates · <a href="lumen/" class="totop" data-cursor="link">our product dream: lumen° →</a></span>
+      <span class="foot-time">your local time&nbsp;<b id="localTime">--:--</b></span>
+      <a href="#hero" class="totop" data-cursor="link">back to dawn ↑</a>
+    </div>
+  </footer>
+
+</main>
+
+<!-- foreground ambient -->
+<div class="clouds near" id="cloudsNear" aria-hidden="true"></div>
+<canvas id="fx" aria-hidden="true"></canvas>
+<div id="grain" aria-hidden="true"></div>
+
+<!-- HUD -->
+<div id="bar" aria-hidden="true"></div>
+<div id="hud-clock" class="hud" aria-hidden="true"><b id="clockTime">05:47</b><span id="clockLabel">dawn</span></div>
+<div id="hint" class="hud" aria-hidden="true"><span>scroll into the dream</span><i></i></div>
+
+<nav id="nav">
+  <a class="logo" href="#hero" data-cursor="link">reverie<span class="logo-star">✦</span></a>
+  <div class="nav-links">
+    <a href="#manifesto" data-cursor="link">Manifesto</a>
+    <a href="#craft" data-cursor="link">Craft</a>
+    <a href="#dreams" data-cursor="link">Dreams</a>
+    <a href="#contact" data-cursor="link">Contact</a>
+  </div>
+  <a class="btn btn-pill magnetic" href="#contact" data-cursor="link"><span class="btn-txt">Hire the dreamers</span></a>
+</nav>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<div id="cursor" aria-hidden="true">
+  <div class="c-ring"></div>
+  <div class="c-label"></div>
+  <div class="c-dot"></div>
+</div>
+
+<div id="loader" aria-hidden="true">
+  <div class="load-center">
+    <div class="load-mark">✦</div>
+    <div class="load-pct" id="loadPct">00</div>
+    <div class="load-word" id="loadWord">gathering stardust…</div>
+  </div>
+</div>
+
+<script src="js/main.js" defer></script>
+</body>
+</html>
