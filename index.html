@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Reverie® — A Creative Studio for Impossible Ideas</title>
-  <meta name="description" content="Reverie is a motion-first creative studio building playful, dreamlike web experiences. One scroll takes you from dawn to midnight.">
-  <meta property="og:title" content="Reverie® — A Creative Studio for Impossible Ideas">
-  <meta property="og:description" content="Playful, dreamlike, motion-first web experiences. Scroll from dawn to midnight.">
+  <title>Lumen° — A Lamp That Dreams It's the Sun</title>
+  <meta name="description" content="Lumen is a sunrise lamp: 1,600 lumens of private dawn in hand-blown glass and recycled brass. Scroll — it assembles itself, opens up, and powers on.">
+  <meta property="og:title" content="Lumen° — A Lamp That Dreams It's the Sun">
+  <meta property="og:description" content="A private sunrise for your bedside. Scroll it into existence.">
   <meta name="theme-color" content="#0b0820">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9C%A6%3C/text%3E%3C/svg%3E">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%98%80%3C/text%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@1,9..144,300..500&family=Instrument+Sans:wght@400;500;600&family=Space+Mono&family=Syne:wght@500;600;700;800&display=swap" rel="stylesheet">
@@ -18,9 +18,10 @@
 <noscript>
   <style>
     #world{position:static!important}
-    #loader,#cursor,#hint,#hud-clock,#bar,#stars,#fx,#grain{display:none!important}
-    [data-reveal],[data-split],.hero-inner,.hero-cta{opacity:1!important;transform:none!important}
+    #loader,#cursor,#hint,#hud-clock,#bar,#stars,#fx,#grain,#lamp3d,#tagLines{display:none!important}
+    [data-reveal],[data-split],.hero-inner,.hero-cta,.pcap{opacity:1!important;transform:none!important}
     body{background:#14102e;color:#efe9ff}
+    html.no3d .p-fallback{display:grid!important}
   </style>
 </noscript>
 
@@ -38,23 +39,23 @@
 <div class="clouds" id="cloudsFar" aria-hidden="true"></div>
 <div class="clouds" id="cloudsMid" aria-hidden="true"></div>
 
-<!-- ✦ the world ✦ -->
+<!-- ☀ the world ☀ -->
 <main id="world">
 
   <!-- HERO -->
   <section id="hero">
     <div class="hero-inner" data-speed="0.86">
-      <p class="eyebrow hero-eyebrow">Reverie® — motion-first creative studio</p>
+      <p class="eyebrow hero-eyebrow">Lumen° — a sunrise, domesticated · a Reverie® concept</p>
       <h1 class="hero-title">
-        <span class="line clip"><span class="t-solid" data-split="chars">WE BUILD</span></span>
-        <span class="line clip"><em class="t-serif" data-split="chars">impossible</em></span>
-        <span class="line clip"><span class="t-solid" data-split="chars">WEBSITES</span></span>
+        <span class="line clip"><span class="t-solid" data-split="chars">A LAMP</span></span>
+        <span class="line clip"><em class="t-serif" data-split="chars">that dreams it&rsquo;s</em></span>
+        <span class="line clip"><span class="t-solid" data-split="chars">THE SUN</span></span>
       </h1>
-      <p class="hero-sub">Playful, dreamlike web experiences with motion at the core.<br>
-      One scroll takes you from dawn to midnight — go on, try it.</p>
+      <p class="hero-sub">Lumen wakes you with a twenty-minute private dawn — light, birdsong<br>
+      and warm brass. Scroll, and it will build itself in front of you.</p>
       <div class="hero-cta">
-        <a class="btn btn-solid magnetic" href="#dreams" data-cursor="link"><span class="btn-txt">See the dreams</span></a>
-        <a class="btn btn-ghost magnetic" href="#contact" data-cursor="link"><span class="btn-txt">Start a project ✦</span></a>
+        <a class="btn btn-solid magnetic" href="#genesis" data-cursor="link"><span class="btn-txt">Watch it come alive</span></a>
+        <a class="btn btn-ghost magnetic" href="#preorder" data-cursor="link"><span class="btn-txt">Preorder — $249 ✦</span></a>
       </div>
     </div>
     <div class="hero-orbs" aria-hidden="true">
@@ -71,59 +72,111 @@
   <!-- MARQUEE -->
   <div class="marquee" aria-hidden="true">
     <div class="mq-track">
-      <span class="mq-item solid">Parallax worlds</span><span class="mq-star">✦</span>
-      <span class="mq-item outline">Lucid scrolling</span><span class="mq-star">✦</span>
-      <span class="mq-item solid">Motion graphics</span><span class="mq-star">✦</span>
-      <span class="mq-item outline">Micro-delights</span><span class="mq-star">✦</span>
-      <span class="mq-item solid">3D tilt</span><span class="mq-star">✦</span>
-      <span class="mq-item outline">Magnetic buttons</span><span class="mq-star">✦</span>
-      <span class="mq-item solid">Dream logic</span><span class="mq-star">✦</span>
+      <span class="mq-item solid">Private sunrise</span><span class="mq-star">✦</span>
+      <span class="mq-item outline">1,600 lumens</span><span class="mq-star">✦</span>
+      <span class="mq-item solid">Circadian AI</span><span class="mq-star">✦</span>
+      <span class="mq-item outline">Hi-fi birdsong</span><span class="mq-star">✦</span>
+      <span class="mq-item solid">Hand-blown glass</span><span class="mq-star">✦</span>
+      <span class="mq-item outline">Recycled brass</span><span class="mq-star">✦</span>
+      <span class="mq-item solid">Zero alarms</span><span class="mq-star">✦</span>
       <!-- duplicate for seamless loop -->
-      <span class="mq-item solid">Parallax worlds</span><span class="mq-star">✦</span>
-      <span class="mq-item outline">Lucid scrolling</span><span class="mq-star">✦</span>
-      <span class="mq-item solid">Motion graphics</span><span class="mq-star">✦</span>
-      <span class="mq-item outline">Micro-delights</span><span class="mq-star">✦</span>
-      <span class="mq-item solid">3D tilt</span><span class="mq-star">✦</span>
-      <span class="mq-item outline">Magnetic buttons</span><span class="mq-star">✦</span>
-      <span class="mq-item solid">Dream logic</span><span class="mq-star">✦</span>
+      <span class="mq-item solid">Private sunrise</span><span class="mq-star">✦</span>
+      <span class="mq-item outline">1,600 lumens</span><span class="mq-star">✦</span>
+      <span class="mq-item solid">Circadian AI</span><span class="mq-star">✦</span>
+      <span class="mq-item outline">Hi-fi birdsong</span><span class="mq-star">✦</span>
+      <span class="mq-item solid">Hand-blown glass</span><span class="mq-star">✦</span>
+      <span class="mq-item outline">Recycled brass</span><span class="mq-star">✦</span>
+      <span class="mq-item solid">Zero alarms</span><span class="mq-star">✦</span>
     </div>
   </div>
 
-  <!-- MANIFESTO — pinned, words reveal as you scroll -->
-  <section id="manifesto" class="pin" data-pin>
+  <!-- STORY — pinned, words reveal as you scroll -->
+  <section id="story" class="pin" data-pin>
     <div class="pin-stick">
       <div class="wrap mani-wrap">
-        <p class="eyebrow">01 — Manifesto</p>
-        <p class="mani" id="mani">Most websites are awake. Ours are <em>lucid.</em> We mix motion, story and a little mischief until your brand stops feeling like a page — and starts feeling like a <em>place</em> people never want to leave.</p>
+        <p class="eyebrow">01 — The idea</p>
+        <p class="mani" id="mani">Alarms yank you out of sleep. Lumen <em>persuades</em> you — it raises a small, private sun over your bedside and lets your body do what bodies have always done: <em>wake with the light.</em></p>
         <p class="mani-hint">keep scrolling — the words follow you</p>
       </div>
     </div>
   </section>
 
-  <!-- CRAFT / SERVICES -->
-  <section id="craft">
+  <!-- GENESIS — pinned 3D: assemble → explode → reassemble → power on -->
+  <section id="genesis" class="pin" data-pin data-product>
+    <div class="pin-stick">
+      <div id="stage">
+        <canvas id="lamp3d" aria-label="3D model of the Lumen lamp assembling and opening into its parts"></canvas>
+        <div id="lampShadow" aria-hidden="true"></div>
+        <div id="roomdim" aria-hidden="true"></div>
+        <svg id="tagLines" aria-hidden="true"></svg>
+        <div id="tags" aria-hidden="true"></div>
+
+        <div class="pcaps">
+          <div class="pcap" data-cap="0">
+            <p class="eyebrow">02 — Genesis</p>
+            <h2 class="h2">From stardust, <em>a sun.</em></h2>
+            <p class="pcap-sub">scroll — lumen assembles itself</p>
+          </div>
+          <div class="pcap" data-cap="1">
+            <p class="eyebrow">02 — Genesis</p>
+            <h2 class="h2">Designed <em>whole.</em></h2>
+            <p class="pcap-sub">one globe, one body, no seams</p>
+          </div>
+          <div class="pcap" data-cap="2">
+            <p class="eyebrow">03 — Inside</p>
+            <h2 class="h2">Every layer, <em>honest.</em></h2>
+            <p class="pcap-sub">keep scrolling to open it up</p>
+          </div>
+          <div class="pcap" data-cap="3">
+            <p class="eyebrow">03 — Inside</p>
+            <h2 class="h2">And back <em>to one.</em></h2>
+          </div>
+          <div class="pcap" data-cap="4">
+            <p class="eyebrow">04 — Dusk</p>
+            <h2 class="h2">The room dims — <em>Lumen rises.</em></h2>
+            <p class="pcap-sub">1,600 lumens of private sunrise</p>
+          </div>
+        </div>
+
+        <div class="pdots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+
+        <!-- shown only when WebGL is unavailable -->
+        <div class="p-fallback" aria-hidden="true">
+          <div class="pf-lamp"><i class="pf-globe"></i><i class="pf-collar"></i><i class="pf-body"></i><i class="pf-base"></i></div>
+          <ul class="pf-list">
+            <li>Hand-blown opal globe</li><li>Photon core — 1,600 lm</li><li>48-LED sunrise halo</li>
+            <li>Silent cooling fins</li><li>40 mm soundscape driver</li><li>Circadian logic board</li>
+            <li>Recycled brass body &amp; base</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section id="features">
     <div class="wrap">
-      <p class="eyebrow" data-reveal>02 — What we conjure</p>
-      <h2 class="h2" data-reveal data-d="1">Craft, <em>but make it float.</em></h2>
+      <p class="eyebrow" data-reveal>03 — What&rsquo;s in the light</p>
+      <h2 class="h2" data-reveal data-d="1">Engineered, <em>then enchanted.</em></h2>
       <ul class="rows">
         <li class="row" data-peek="1" data-reveal data-cursor="link">
           <span class="r-num">01</span>
-          <span class="r-main"><span class="r-title">Immersive websites</span><span class="r-tag">Scroll journeys, parallax worlds, zero boredom.</span></span>
+          <span class="r-main"><span class="r-title">Sunrise engine</span><span class="r-tag">0 → 1,600 lumens across a twenty-minute dawn, tuned to your chronotype.</span></span>
           <span class="r-arr">→</span>
         </li>
         <li class="row" data-peek="2" data-reveal data-d="1" data-cursor="link">
           <span class="r-num">02</span>
-          <span class="r-main"><span class="r-title">Motion &amp; interaction</span><span class="r-tag">Micro-delights that make cursors curious.</span></span>
+          <span class="r-main"><span class="r-title">Soundscapes</span><span class="r-tag">A hidden 40 mm driver — birdsong, rain, the sea, vinyl crackle.</span></span>
           <span class="r-arr">→</span>
         </li>
         <li class="row" data-peek="3" data-reveal data-d="2" data-cursor="link">
           <span class="r-num">03</span>
-          <span class="r-main"><span class="r-title">Brand universes</span><span class="r-tag">Identities with gravity, color and lore.</span></span>
+          <span class="r-main"><span class="r-title">Circadian intelligence</span><span class="r-tag">It learns your sleep and nudges the light before you know you need it.</span></span>
           <span class="r-arr">→</span>
         </li>
         <li class="row" data-peek="4" data-reveal data-d="3" data-cursor="link">
           <span class="r-num">04</span>
-          <span class="r-main"><span class="r-title">Playful commerce</span><span class="r-tag">Stores that sell with a wink.</span></span>
+          <span class="r-main"><span class="r-title">Honest materials</span><span class="r-tag">Recycled brass, hand-blown opal glass, zero plastic apologies.</span></span>
           <span class="r-arr">→</span>
         </li>
       </ul>
@@ -131,13 +184,13 @@
     <div id="peek" aria-hidden="true"></div>
   </section>
 
-  <!-- DREAMS — pinned horizontal gallery -->
-  <section id="dreams" class="pin" data-pin data-gallery>
+  <!-- MOMENTS — pinned horizontal gallery -->
+  <section id="moments" class="pin" data-pin data-gallery>
     <div class="pin-stick">
       <div class="wrap gal-head">
         <div>
-          <p class="eyebrow">03 — Selected dreams</p>
-          <h2 class="h2">Recent <em>reveries</em></h2>
+          <p class="eyebrow">04 — One lamp, many moods</p>
+          <h2 class="h2">Moments of <em>light</em></h2>
         </div>
         <p class="gal-hint">scroll ↓ becomes → here</p>
       </div>
@@ -145,16 +198,15 @@
 
         <article class="dream tilt" data-cursor="view">
           <div class="dream-inner">
-            <div class="dream-art art-hotel">
+            <div class="dream-art art-first">
               <div class="scene">
-                <i class="puff p1"></i><i class="puff p2"></i><i class="puff p3"></i>
-                <i class="balloon"></i><i class="basket"></i>
-                <i class="mini-sun"></i>
+                <i class="pool"></i><i class="m-stand"></i><i class="m-globe"></i>
+                <span class="m-spark s1">✦</span><span class="m-spark s2">✦</span>
               </div>
             </div>
             <div class="dream-meta">
-              <div><span class="d-index">01</span><h3>Cloud Nine Hotel</h3><p>Hospitality, but airborne.</p></div>
-              <span class="d-tags">Web · 3D · Booking</span>
+              <div><span class="d-index">01</span><h3>First Light</h3><p>06:00, gently.</p></div>
+              <span class="d-tags">Wake · 20-min dawn</span>
             </div>
             <i class="glare"></i>
           </div>
@@ -162,16 +214,14 @@
 
         <article class="dream tilt" data-cursor="view">
           <div class="dream-inner">
-            <div class="dream-art art-botany">
+            <div class="dream-art art-focus">
               <div class="scene">
-                <i class="leaf l1"></i><i class="leaf l2"></i><i class="leaf l3"></i>
-                <i class="bloom b1"></i><i class="bloom b2"></i>
-                <i class="glow-pool"></i>
+                <i class="beam"></i><i class="pool"></i><i class="m-stand"></i><i class="m-globe"></i>
               </div>
             </div>
             <div class="dream-meta">
-              <div><span class="d-index">02</span><h3>Neon Botany</h3><p>A greenhouse that glows back.</p></div>
-              <span class="d-tags">Brand · Web · Motion</span>
+              <div><span class="d-index">02</span><h3>Deep Focus</h3><p>A crisp noon for your desk.</p></div>
+              <span class="d-tags">Work · 5000 K</span>
             </div>
             <i class="glare"></i>
           </div>
@@ -179,17 +229,15 @@
 
         <article class="dream tilt" data-cursor="view">
           <div class="dream-inner">
-            <div class="dream-art art-orbit">
+            <div class="dream-art art-golden">
               <div class="scene">
-                <i class="orbit-ring r1"></i><i class="orbit-ring r2"></i>
-                <i class="planet"></i><i class="planet-ring"></i>
-                <i class="sat"></i>
-                <div class="eq"><i></i><i></i><i></i><i></i><i></i></div>
+                <i class="ray r1"></i><i class="ray r2"></i><i class="ray r3"></i>
+                <i class="pool"></i><i class="m-stand"></i><i class="m-globe"></i>
               </div>
             </div>
             <div class="dream-meta">
-              <div><span class="d-index">03</span><h3>Orbit Radio</h3><p>Music broadcast from the moon.</p></div>
-              <span class="d-tags">Web app · Audio · Identity</span>
+              <div><span class="d-index">03</span><h3>Golden Hour</h3><p>Slow evenings, poured in amber.</p></div>
+              <span class="d-tags">Unwind · 2200 K</span>
             </div>
             <i class="glare"></i>
           </div>
@@ -197,15 +245,15 @@
 
         <article class="dream tilt" data-cursor="view">
           <div class="dream-inner">
-            <div class="dream-art art-arcade">
+            <div class="dream-art art-aurora">
               <div class="scene">
-                <i class="retro-sun"></i>
-                <i class="grid-floor"></i>
+                <i class="ribbon rb1"></i><i class="ribbon rb2"></i>
+                <i class="pool"></i><i class="m-stand"></i><i class="m-globe"></i>
               </div>
             </div>
             <div class="dream-meta">
-              <div><span class="d-index">04</span><h3>Midnight Arcade</h3><p>Play after dark.</p></div>
-              <span class="d-tags">Campaign · WebGL · Games</span>
+              <div><span class="d-index">04</span><h3>Aurora</h3><p>The lamp, dreaming in color.</p></div>
+              <span class="d-tags">Play · 16M colors</span>
             </div>
             <i class="glare"></i>
           </div>
@@ -213,27 +261,24 @@
 
         <article class="dream tilt" data-cursor="view">
           <div class="dream-inner">
-            <div class="dream-art art-planets">
+            <div class="dream-art art-ember">
               <div class="scene">
-                <i class="paper-orbit"></i>
-                <i class="pp pp1"></i>
-                <i class="pp pp2"><i class="pp-ring"></i></i>
-                <i class="pp pp3 face"></i>
-                <span class="pp-star s1">✦</span><span class="pp-star s2">✦</span>
+                <i class="m-moon"></i><span class="m-spark s1">✦</span>
+                <i class="pool"></i><i class="m-stand"></i><i class="m-globe"></i>
               </div>
             </div>
             <div class="dream-meta">
-              <div><span class="d-index">05</span><h3>Paper Planets</h3><p>A storybook solar system.</p></div>
-              <span class="d-tags">Editorial · Illustration · Web</span>
+              <div><span class="d-index">05</span><h3>Ember</h3><p>Light that won&rsquo;t wake the house.</p></div>
+              <span class="d-tags">Night · 1 lm</span>
             </div>
             <i class="glare"></i>
           </div>
         </article>
 
-        <article class="dream dream-cta" data-cursor="link" id="yourDream">
+        <article class="dream dream-cta" data-cursor="link" id="yourBedside">
           <div class="dream-inner">
-            <p class="cta-big">Your dream<br><em>here</em> →</p>
-            <p class="cta-small">this slot is reserved for you</p>
+            <p class="cta-big">Your bedside<br><em>here</em> →</p>
+            <p class="cta-small">preorders open tonight</p>
           </div>
         </article>
 
@@ -245,31 +290,31 @@
   <!-- STATS -->
   <section id="stats">
     <div class="wrap stats-grid">
-      <div class="stat" data-reveal><span class="stat-n"><span class="counter" data-count="37">0</span></span><span class="stat-l">worlds built</span></div>
-      <div class="stat" data-reveal data-d="1"><span class="stat-n"><span class="counter" data-count="214">0</span>%</span><span class="stat-l">avg. sparkle increase</span></div>
-      <div class="stat" data-reveal data-d="2"><span class="stat-n"><span class="counter" data-count="0" data-from="25">25</span></span><span class="stat-l">templates used, ever</span></div>
-      <div class="stat" data-reveal data-d="3"><span class="stat-n"><span class="counter" data-count="inf">1</span></span><span class="stat-l">curiosity</span></div>
+      <div class="stat" data-reveal><span class="stat-n"><span class="counter" data-count="1600">0</span></span><span class="stat-l">lumens at full sun</span></div>
+      <div class="stat" data-reveal data-d="1"><span class="stat-n"><span class="counter" data-count="20">0</span></span><span class="stat-l">minute sunrises</span></div>
+      <div class="stat" data-reveal data-d="2"><span class="stat-n"><span class="counter" data-count="48">0</span></span><span class="stat-l">LEDs in the halo</span></div>
+      <div class="stat" data-reveal data-d="3"><span class="stat-n"><span class="counter" data-count="inf">1</span></span><span class="stat-l">moods</span></div>
     </div>
   </section>
 
   <!-- NIGHT QUOTE -->
   <section id="night">
     <div class="wrap night-wrap">
-      <p class="eyebrow" data-reveal>What clients dream about us</p>
-      <blockquote class="quote" data-reveal="blur" data-d="1">“Working with Reverie felt like lucid dreaming — we pointed at something impossible and woke up with it <em>shipped.</em>”</blockquote>
-      <p class="quote-who" data-reveal data-d="2"><i class="avatar">AK</i> Aanya Kapoor — founder, Somewhere Inc.</p>
+      <p class="eyebrow" data-reveal>What early risers say</p>
+      <blockquote class="quote" data-reveal="blur" data-d="1">&ldquo;The first morning, I honestly thought I&rsquo;d overslept into a perfect summer day. It was <em>6 a.m. in November.</em>&rdquo;</blockquote>
+      <p class="quote-who" data-reveal data-d="2"><i class="avatar">MS</i> Mira Solano — early tester, night owl (reformed)</p>
     </div>
   </section>
 
-  <!-- CONTACT -->
-  <section id="contact">
+  <!-- PREORDER -->
+  <section id="preorder">
     <div class="wrap contact-wrap">
-      <p class="eyebrow" data-reveal>04 — Wake up with us</p>
-      <h2 class="giant clip"><span class="wave" data-split="chars">LET'S DREAM</span></h2>
-      <p class="giant-em clip"><em class="wave" data-split="chars">together</em></p>
-      <p class="c-sub" data-reveal>Tell us the impossible thing. We'll bring the clouds.</p>
+      <p class="eyebrow" data-reveal>05 — First light ships winter 2026</p>
+      <h2 class="giant clip"><span class="wave" data-split="chars">WAKE UP</span></h2>
+      <p class="giant-em clip"><em class="wave" data-split="chars">brighter</em></p>
+      <p class="c-sub" data-reveal>$249 · free sunrise updates forever · 100-night guarantee.</p>
       <div class="hero-cta" data-reveal data-d="2">
-        <a class="btn btn-solid btn-big magnetic" href="mailto:gautamhridyansh@gmail.com?subject=Let%27s%20build%20a%20dream%20%E2%9C%A6" data-cursor="link"><span class="btn-txt">Start a project ✦</span></a>
+        <a class="btn btn-solid btn-big magnetic" href="mailto:gautamhridyansh@gmail.com?subject=Lumen%20preorder%20%E2%98%80" data-cursor="link"><span class="btn-txt">Preorder Lumen° ✦</span></a>
         <button class="btn btn-ghost magnetic" id="copyEmail" data-cursor="link" type="button"><span class="btn-txt">gautamhridyansh@gmail.com</span></button>
       </div>
     </div>
@@ -279,18 +324,18 @@
   <footer>
     <div class="marquee foot-mq" aria-hidden="true">
       <div class="mq-track">
-        <span class="mq-item outline">Awake?</span><span class="mq-star">✦</span>
-        <span class="mq-item solid">Let's build</span><span class="mq-star">✦</span>
-        <span class="mq-item outline">Reverie</span><span class="mq-star">✦</span>
-        <span class="mq-item solid">Est. in a dream</span><span class="mq-star">✦</span>
-        <span class="mq-item outline">Awake?</span><span class="mq-star">✦</span>
-        <span class="mq-item solid">Let's build</span><span class="mq-star">✦</span>
-        <span class="mq-item outline">Reverie</span><span class="mq-star">✦</span>
-        <span class="mq-item solid">Est. in a dream</span><span class="mq-star">✦</span>
+        <span class="mq-item outline">Rise &amp; shine</span><span class="mq-star">✦</span>
+        <span class="mq-item solid">Lumen°</span><span class="mq-star">✦</span>
+        <span class="mq-item outline">Good morning</span><span class="mq-star">✦</span>
+        <span class="mq-item solid">A Reverie dream</span><span class="mq-star">✦</span>
+        <span class="mq-item outline">Rise &amp; shine</span><span class="mq-star">✦</span>
+        <span class="mq-item solid">Lumen°</span><span class="mq-star">✦</span>
+        <span class="mq-item outline">Good morning</span><span class="mq-star">✦</span>
+        <span class="mq-item solid">A Reverie dream</span><span class="mq-star">✦</span>
       </div>
     </div>
     <div class="wrap foot-row">
-      <span>© 2026 Reverie Studio — handcrafted, zero templates · <a href="lumen/" class="totop" data-cursor="link">our product dream: lumen° →</a></span>
+      <span>© 2026 Lumen° — dreamt up by Reverie®</span>
       <span class="foot-time">your local time&nbsp;<b id="localTime">--:--</b></span>
       <a href="#hero" class="totop" data-cursor="link">back to dawn ↑</a>
     </div>
@@ -306,17 +351,17 @@
 <!-- HUD -->
 <div id="bar" aria-hidden="true"></div>
 <div id="hud-clock" class="hud" aria-hidden="true"><b id="clockTime">05:47</b><span id="clockLabel">dawn</span></div>
-<div id="hint" class="hud" aria-hidden="true"><span>scroll into the dream</span><i></i></div>
+<div id="hint" class="hud" aria-hidden="true"><span>scroll to sunrise</span><i></i></div>
 
 <nav id="nav">
-  <a class="logo" href="#hero" data-cursor="link">reverie<span class="logo-star">✦</span></a>
+  <a class="logo" href="#hero" data-cursor="link">lumen<span class="logo-star">°</span></a>
   <div class="nav-links">
-    <a href="#manifesto" data-cursor="link">Manifesto</a>
-    <a href="#craft" data-cursor="link">Craft</a>
-    <a href="#dreams" data-cursor="link">Dreams</a>
-    <a href="#contact" data-cursor="link">Contact</a>
+    <a href="#story" data-cursor="link">Story</a>
+    <a href="#genesis" data-cursor="link">Inside</a>
+    <a href="#moments" data-cursor="link">Moments</a>
+    <a href="#preorder" data-cursor="link">Preorder</a>
   </div>
-  <a class="btn btn-pill magnetic" href="#contact" data-cursor="link"><span class="btn-txt">Hire the dreamers</span></a>
+  <a class="btn btn-pill magnetic" href="#preorder" data-cursor="link"><span class="btn-txt">Preorder — $249</span></a>
 </nav>
 
 <div id="toast" role="status" aria-live="polite"></div>
@@ -329,12 +374,13 @@
 
 <div id="loader" aria-hidden="true">
   <div class="load-center">
-    <div class="load-mark">✦</div>
+    <div class="load-mark">☀</div>
     <div class="load-pct" id="loadPct">00</div>
-    <div class="load-word" id="loadWord">gathering stardust…</div>
+    <div class="load-word" id="loadWord">polishing brass…</div>
   </div>
 </div>
 
+<script src="js/three.min.js" defer></script>
 <script src="js/main.js" defer></script>
 </body>
 </html>

@@ -1,7 +1,8 @@
 /* ============================================================
-   REVERIE® — motion engine
-   Custom smooth scroll · scroll-driven day→night sky · pins ·
-   parallax · starfield · custom cursor · zero dependencies.
+   LUMEN° — motion engine + WebGL genesis
+   Reverie® design language: custom smooth scroll, scroll-driven
+   day→night sky, pins, parallax, starfield, custom cursor —
+   plus a three.js lamp that assembles, explodes and powers on.
    ============================================================ */
 (() => {
 'use strict';
@@ -26,7 +27,6 @@ const FORCE_P = (() => {
   const v = parseFloat(new URLSearchParams(location.search).get('p'));
   return Number.isFinite(v) ? Math.min(Math.max(v, 0), 1) : -1;
 })();
-const DEBUG = new URLSearchParams(location.search).has('debug');
 window.scrollTo(0, 0);
 
 /* ---------- state ---------- */
@@ -49,6 +49,9 @@ const smooth = (a, b, v) => {
   return t * t * (3 - 2 * t);
 };
 const mod = (n, m) => ((n % m) + m) % m;
+const easeOutCubic = t => 1 - Math.pow(1 - t, 3);
+/* deterministic pseudo-random (stable scatter positions) */
+const srnd = n => { const x = Math.sin(n * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
 
 /* ============================================================
    SPLIT TEXT
@@ -154,7 +157,7 @@ const clockLabel = $('#clockLabel');
 const auroras = $$('.aurora');
 const track = $('#track');
 const galBar = $('#galBar');
-const galSec = $('#dreams');
+const galSec = $('#moments');
 const scenes = $$('#track .scene');
 const sceneData = scenes.map(sc => ({ sc, card: sc.closest('.dream'), left: 0, w: 0 }));
 const heroLayers = $$('.orb-wrap').map(el => ({ el, d: parseFloat(el.dataset.depth) || 1 }));
@@ -166,9 +169,11 @@ const paraEls = $$('[data-speed]').map(el => ({ el, speed: parseFloat(el.dataset
 const pins = $$('[data-pin]').map(sec => ({
   sec,
   stick: $('.pin-stick', sec),
-  type: sec.hasAttribute('data-gallery') ? 'gallery' : 'mani',
+  type: sec.hasAttribute('data-gallery') ? 'gallery'
+      : sec.hasAttribute('data-product') ? 'product' : 'mani',
   top: 0, len: 1, lastY: null,
 }));
+const productPin = pins.find(p => p.type === 'product');
 
 /* clouds */
 function buildClouds() {
@@ -231,6 +236,7 @@ function measure() {
 
   sizeCanvas(starsCv, starsCtx);
   sizeCanvas(fxCv, fxCtx);
+  if (lamp) lamp.resize();
 }
 
 /* ============================================================
@@ -455,6 +461,421 @@ function drawFx() {
 }
 
 /* ============================================================
+   THE LAMP — three.js genesis scene
+   Parts scatter as stardust → assemble → explode with labeled
+   internals → reassemble → power on while the room dims.
+   ============================================================ */
+const lamp = (() => {
+  const cv = $('#lamp3d');
+  if (!cv || !window.THREE) { html.classList.add('no3d'); return null; }
+
+  let renderer;
+  try {
+    renderer = new THREE.WebGLRenderer({ canvas: cv, antialias: true, alpha: true, powerPreference: 'high-performance' });
+  } catch (e) {
+    html.classList.add('no3d');
+    return null;
+  }
+  renderer.setClearColor(0x000000, 0);
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.setPixelRatio(DPR);
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 60);
+
+  /* --- procedural environment (gives the metals life) --- */
+  function envFace(top, mid, bot, streak) {
+    const c = document.createElement('canvas');
+    c.width = c.height = 64;
+    const g = c.getContext('2d');
+    const gr = g.createLinearGradient(0, 0, 0, 64);
+    gr.addColorStop(0, top); gr.addColorStop(0.55, mid); gr.addColorStop(1, bot);
+    g.fillStyle = gr;
+    g.fillRect(0, 0, 64, 64);
+    if (streak) {
+      const s = g.createLinearGradient(18, 0, 46, 0);
+      s.addColorStop(0, 'rgba(255,244,220,0)');
+      s.addColorStop(0.5, 'rgba(255,244,220,.85)');
+      s.addColorStop(1, 'rgba(255,244,220,0)');
+      g.fillStyle = s;
+      g.fillRect(0, 0, 64, 44);
+    }
+    return c;
+  }
+  const envTex = new THREE.CubeTexture([
+    envFace('#fbe6c8', '#b98ec0', '#3a2b5e', true),   // px — window streak
+    envFace('#e8cdea', '#a687c9', '#352a56'),          // nx
+    envFace('#fff4e0', '#f2c9c4', '#c9a0c8'),          // py — bright above
+    envFace('#4a3870', '#2c2150', '#1a1338'),          // ny — dark floor
+    envFace('#f6d8c4', '#b490c8', '#382a5c'),          // pz
+    envFace('#e2c2d8', '#9a7fc2', '#302650'),          // nz
+  ]);
+  envTex.needsUpdate = true;
+  envTex.encoding = THREE.sRGBEncoding;
+  scene.environment = envTex;
+
+  /* --- lights --- */
+  const hemi = new THREE.HemisphereLight(0xfff4e2, 0x3a2b5e, 0.85);
+  const key = new THREE.DirectionalLight(0xffffff, 0.95);
+  key.position.set(4.5, 7, 6);
+  const rim = new THREE.DirectionalLight(0x9a6cff, 0.4);
+  rim.position.set(-5, 3, -5);
+  scene.add(hemi, key, rim);
+
+  /* --- materials --- */
+  const matBrass = new THREE.MeshStandardMaterial({ color: 0xd8a45f, metalness: 0.9, roughness: 0.32 });
+  const matBrassDark = new THREE.MeshStandardMaterial({ color: 0x8a5c3c, metalness: 0.85, roughness: 0.42 });
+  const matDark = new THREE.MeshStandardMaterial({ color: 0x241a30, metalness: 0.25, roughness: 0.55 });
+  const matAlu = new THREE.MeshStandardMaterial({ color: 0xc7ccd6, metalness: 0.85, roughness: 0.36 });
+  const matPCB = new THREE.MeshStandardMaterial({ color: 0x1c4a36, metalness: 0.15, roughness: 0.55 });
+  const matChip = new THREE.MeshStandardMaterial({ color: 0x14141c, metalness: 0.45, roughness: 0.4 });
+  const matCore = new THREE.MeshStandardMaterial({ color: 0xfff3dc, emissive: 0xffb37a, emissiveIntensity: 0.35 });
+  const matHaloRing = new THREE.MeshStandardMaterial({ color: 0x2a2036, metalness: 0.3, roughness: 0.5, emissive: 0xff9d5c, emissiveIntensity: 0.25 });
+  const matLed = new THREE.MeshStandardMaterial({ color: 0xfff6e6, emissive: 0xffc890, emissiveIntensity: 0.6 });
+  const matGlass = new THREE.MeshPhysicalMaterial({
+    color: 0xfff8ee, metalness: 0, roughness: 0.07,
+    transparent: true, opacity: 0.2, clearcoat: 1, clearcoatRoughness: 0.15,
+    side: THREE.DoubleSide, depthWrite: false,
+  });
+
+  /* --- part builders (each group is centered on its own origin) --- */
+  const B = {
+    base() {
+      const g = new THREE.Group();
+      g.add(new THREE.Mesh(new THREE.CylinderGeometry(1.06, 1.18, 0.44, 56), matBrass));
+      const bevel = new THREE.Mesh(new THREE.CylinderGeometry(0.98, 1.06, 0.1, 56), matBrassDark);
+      bevel.position.y = 0.27;
+      const foot = new THREE.Mesh(new THREE.TorusGeometry(1.12, 0.035, 12, 56), matBrassDark);
+      foot.rotation.x = Math.PI / 2;
+      foot.position.y = -0.22;
+      g.add(bevel, foot);
+      return g;
+    },
+    dial() {
+      const g = new THREE.Group();
+      g.add(new THREE.Mesh(new THREE.CylinderGeometry(1.1, 1.12, 0.16, 56), matDark));
+      const ring = new THREE.Mesh(new THREE.TorusGeometry(1.1, 0.018, 10, 56), matBrass);
+      ring.rotation.x = Math.PI / 2;
+      ring.position.y = 0.08;
+      const notch = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.1, 0.05), matBrass);
+      notch.position.set(0, 0, 1.11);
+      g.add(ring, notch);
+      return g;
+    },
+    pcb() {
+      const g = new THREE.Group();
+      g.add(new THREE.Mesh(new THREE.CylinderGeometry(0.82, 0.82, 0.05, 40), matPCB));
+      for (let i = 0; i < 7; i++) {
+        const w = 0.1 + srnd(i * 7 + 1) * 0.2;
+        const chip = new THREE.Mesh(new THREE.BoxGeometry(w, 0.05, 0.1 + srnd(i * 7 + 2) * 0.16), matChip);
+        const an = srnd(i * 7 + 3) * Math.PI * 2, rr = 0.15 + srnd(i * 7 + 4) * 0.5;
+        chip.position.set(Math.cos(an) * rr, 0.05, Math.sin(an) * rr);
+        g.add(chip);
+      }
+      return g;
+    },
+    speaker() {
+      const g = new THREE.Group();
+      const cone = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.2, 0.26, 40, 1, true), matDark);
+      const cap = new THREE.Mesh(new THREE.SphereGeometry(0.12, 20, 14), matAlu);
+      cap.position.y = -0.04;
+      const rimT = new THREE.Mesh(new THREE.TorusGeometry(0.5, 0.03, 10, 40), matAlu);
+      rimT.rotation.x = Math.PI / 2;
+      rimT.position.y = 0.13;
+      const magnet = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.18, 0.14, 24), matDark);
+      magnet.position.y = -0.18;
+      g.add(cone, cap, rimT, magnet);
+      return g;
+    },
+    fins() {
+      const g = new THREE.Group();
+      const rod = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.15, 0.54, 20), matAlu);
+      g.add(rod);
+      for (let i = 0; i < 14; i++) {
+        const fin = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.5, 0.32), matAlu);
+        const an = (i / 14) * Math.PI * 2;
+        fin.position.set(Math.cos(an) * 0.38, 0, Math.sin(an) * 0.38);
+        fin.rotation.y = -an + Math.PI / 2;
+        g.add(fin);
+      }
+      return g;
+    },
+    shell() {
+      const g = new THREE.Group();
+      g.add(new THREE.Mesh(new THREE.CylinderGeometry(0.93, 0.99, 0.95, 56, 1, true), matBrass));
+      const rimTop = new THREE.Mesh(new THREE.TorusGeometry(0.93, 0.024, 10, 56), matBrassDark);
+      rimTop.rotation.x = Math.PI / 2;
+      rimTop.position.y = 0.475;
+      const rimBot = new THREE.Mesh(new THREE.TorusGeometry(0.99, 0.024, 10, 56), matBrassDark);
+      rimBot.rotation.x = Math.PI / 2;
+      rimBot.position.y = -0.475;
+      g.add(rimTop, rimBot);
+      return g;
+    },
+    collar() {
+      const g = new THREE.Group();
+      g.add(new THREE.Mesh(new THREE.CylinderGeometry(0.84, 0.9, 0.12, 56), matBrass));
+      return g;
+    },
+    halo() {
+      const g = new THREE.Group();
+      const ring = new THREE.Mesh(new THREE.TorusGeometry(0.52, 0.045, 14, 64), matHaloRing);
+      ring.rotation.x = Math.PI / 2;
+      g.add(ring);
+      for (let i = 0; i < 24; i++) {
+        const led = new THREE.Mesh(new THREE.SphereGeometry(0.028, 8, 6), matLed);
+        const an = (i / 24) * Math.PI * 2;
+        led.position.set(Math.cos(an) * 0.52, 0.03, Math.sin(an) * 0.52);
+        g.add(led);
+      }
+      return g;
+    },
+    core() {
+      const g = new THREE.Group();
+      g.add(new THREE.Mesh(new THREE.SphereGeometry(0.3, 32, 22), matCore));
+      g.add(lampLight);
+      glowSprite.scale.set(2.6, 2.6, 1);
+      g.add(glowSprite);
+      return g;
+    },
+    globe() {
+      const g = new THREE.Group();
+      g.add(new THREE.Mesh(new THREE.SphereGeometry(0.92, 48, 32), matGlass));
+      return g;
+    },
+  };
+
+  /* inner light + glow sprite (built before core) */
+  const lampLight = new THREE.PointLight(0xffbe86, 0, 9, 2);
+  function glowTexture() {
+    const c = document.createElement('canvas');
+    c.width = c.height = 128;
+    const g = c.getContext('2d');
+    const gr = g.createRadialGradient(64, 64, 0, 64, 64, 64);
+    gr.addColorStop(0, 'rgba(255,225,180,1)');
+    gr.addColorStop(0.35, 'rgba(255,190,130,.45)');
+    gr.addColorStop(1, 'rgba(255,190,130,0)');
+    g.fillStyle = gr;
+    g.fillRect(0, 0, 128, 128);
+    const t = new THREE.CanvasTexture(c);
+    t.encoding = THREE.sRGBEncoding;
+    return t;
+  }
+  const glowSprite = new THREE.Sprite(new THREE.SpriteMaterial({
+    map: glowTexture(), color: 0xffd9ad, transparent: true, opacity: 0,
+    blending: THREE.AdditiveBlending, depthWrite: false,
+  }));
+
+  /* --- part registry: home y, explode dy, label --- */
+  const PARTS = [
+    { key: 'base',    home: 0.25, dy: -1.10, label: 'Recycled brass base',       side: 'r' },
+    { key: 'dial',    home: 0.60, dy: -0.75, label: 'Clickless brass dial',      side: 'l' },
+    { key: 'pcb',     home: 0.80, dy: -0.45, label: 'Circadian logic board',     side: 'r' },
+    { key: 'speaker', home: 1.06, dy: -0.11, label: '40 mm soundscape driver',   side: 'l' },
+    { key: 'fins',    home: 1.38, dy:  0.27, label: 'Silent cooling fins',       side: 'r' },
+    { key: 'shell',   home: 1.175, dy: 1.275, label: 'Spun brass sleeve',        side: 'l' },
+    { key: 'collar',  home: 1.68, dy:  1.57, label: null,                        side: 'r' },
+    { key: 'halo',    home: 2.35, dy:  1.35, label: '48-LED sunrise halo',       side: 'r' },
+    { key: 'core',    home: 2.60, dy:  1.55, label: 'Photon core — 1,600 lm',    side: 'l' },
+    { key: 'globe',   home: 2.60, dy:  2.90, label: 'Hand-blown opal globe',     side: 'r' },
+  ];
+  /* label reveal order: top of the exploded stack first */
+  const LABEL_ORDER = ['globe', 'core', 'halo', 'shell', 'fins', 'speaker', 'pcb', 'dial', 'base'];
+
+  const group = new THREE.Group();
+  scene.add(group);
+
+  PARTS.forEach((p, i) => {
+    p.g = B[p.key]();
+    p.scatter = new THREE.Vector3(
+      (srnd(i * 3 + 1) - 0.5) * 2 * (4.5 + srnd(i * 5 + 2) * 3),
+      1.6 + (srnd(i * 3 + 2) - 0.5) * 7,
+      clamp((srnd(i * 3 + 3) - 0.5) * 2 * 6, -7, 5),
+    );
+    p.scatterRot = new THREE.Vector3(srnd(i * 9 + 1) * 4 - 2, srnd(i * 9 + 2) * 6 - 3, srnd(i * 9 + 3) * 4 - 2);
+    p.g.position.copy(p.scatter);
+    p.g.scale.setScalar(0.001);
+    group.add(p.g);
+  });
+
+  /* --- stardust particle cloud --- */
+  const P_N = 700;
+  const pGeo = new THREE.BufferGeometry();
+  const pPos = new Float32Array(P_N * 3);
+  for (let i = 0; i < P_N; i++) {
+    const r = 1.6 + srnd(i * 13 + 1) * 4.4;
+    const th = srnd(i * 13 + 2) * Math.PI * 2;
+    const ph = (srnd(i * 13 + 3) - 0.5) * Math.PI;
+    pPos[i * 3] = Math.cos(ph) * Math.cos(th) * r;
+    pPos[i * 3 + 1] = 1.8 + Math.sin(ph) * r * 0.75;
+    pPos[i * 3 + 2] = Math.cos(ph) * Math.sin(th) * r * 0.8;
+  }
+  pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+  const pMat = new THREE.PointsMaterial({
+    color: 0xffd9ad, size: 0.05, transparent: true, opacity: 0,
+    blending: THREE.AdditiveBlending, depthWrite: false, sizeAttenuation: true,
+  });
+  const dustCloud = new THREE.Points(pGeo, pMat);
+  scene.add(dustCloud);
+
+  /* --- HTML labels + SVG leader lines --- */
+  const tagsBox = $('#tags');
+  const svg = $('#tagLines');
+  const SVGNS = 'http://www.w3.org/2000/svg';
+  const labeled = LABEL_ORDER.map((key, j) => {
+    const p = PARTS.find(q => q.key === key);
+    const el = document.createElement('div');
+    el.className = 'tag side-' + p.side;
+    el.innerHTML = `<span class="tag-pill">${p.label}</span>`;
+    tagsBox.appendChild(el);
+    const line = document.createElementNS(SVGNS, 'line');
+    const dot = document.createElementNS(SVGNS, 'circle');
+    dot.setAttribute('r', '2.6');
+    svg.appendChild(line);
+    svg.appendChild(dot);
+    return { p, el, line, dot, j, o: -1 };
+  });
+
+  const shadowEl = $('#lampShadow');
+  const V = new THREE.Vector3();
+
+  function project(v3) {
+    V.copy(v3).project(camera);
+    return { x: (V.x * 0.5 + 0.5) * S.vw, y: (-V.y * 0.5 + 0.5) * S.vh };
+  }
+
+  function resize() {
+    renderer.setSize(S.vw, S.vh, false);
+    camera.aspect = S.vw / S.vh;
+    camera.updateProjectionMatrix();
+  }
+
+  /* --- per-frame drive. lp = 0..1 through the pinned section --- */
+  function draw(lp) {
+    const a = smooth(0.03, 0.30, lp);                                   // assembly
+    const expl = smooth(0.40, 0.64, lp) * (1 - smooth(0.72, 0.86, lp)); // explode → reassemble
+    const pow = smooth(0.88, 0.985, lp);                                // power on
+
+    /* parts */
+    PARTS.forEach((p, i) => {
+      const e = easeOutCubic(clamp((a - i * 0.05) / 0.5, 0, 1));
+      const ty = p.home + p.dy * expl;
+      p.g.position.set(
+        p.scatter.x * (1 - e),
+        lerp(p.scatter.y, ty, e),
+        p.scatter.z * (1 - e),
+      );
+      p.g.rotation.set(p.scatterRot.x * (1 - e), p.scatterRot.y * (1 - e), p.scatterRot.z * (1 - e));
+      const sc = Math.max(0.001, e);
+      p.g.scale.setScalar(sc);
+    });
+
+    /* whole-lamp rotation */
+    const idle = REDUCED ? 0 : S.t * 0.00005;
+    group.rotation.y = -0.55 + a * 0.55 + lp * 1.9 + idle + S.mouseL.x * 0.25;
+
+    /* stardust */
+    const dOp = (1 - a) * 0.85 * smooth(-0.06, 0.02, lp);
+    dustCloud.visible = dOp > 0.01;
+    if (dustCloud.visible) {
+      pMat.opacity = dOp;
+      dustCloud.rotation.y = REDUCED ? 0 : S.t * 0.00012;
+      const s = 1 - a * 0.55;
+      dustCloud.scale.set(s, s, s);
+    }
+
+    /* power-on: emissives, inner light, room lights down */
+    matCore.emissiveIntensity = 0.35 + pow * 3.0;
+    matHaloRing.emissiveIntensity = 0.25 + pow * 2.4;
+    matLed.emissiveIntensity = 0.6 + pow * 3.0;
+    matGlass.opacity = 0.2 + pow * 0.12;
+    lampLight.intensity = pow * 3.0;
+    glowSprite.material.opacity = pow * 0.9;
+    const gs = 2.6 + pow * 2.6;
+    glowSprite.scale.set(gs, gs, 1);
+    hemi.intensity = 0.85 - pow * 0.45;
+    key.intensity = 0.95 - pow * 0.55;
+    rim.intensity = 0.4 - pow * 0.1;
+
+    /* camera */
+    const targetY = 1.45 + expl * 1.2 + pow * 0.75;
+    const camZ = 8.6 - a * 0.6 + expl * 4.9 - pow * 1.9;
+    camera.position.set(S.mouseL.x * 0.6, targetY + 0.55 - S.mouseL.y * 0.4, camZ);
+    camera.lookAt(0, targetY, 0);
+    camera.updateMatrixWorld();
+    group.updateMatrixWorld(true);
+
+    /* contact shadow */
+    const basePos = PARTS[0].g.position;
+    const sPt = project(V.set(basePos.x, basePos.y - 0.28, basePos.z));
+    const shOp = a * 0.55 * (1 - pow * 0.7);
+    shadowEl.style.opacity = shOp.toFixed(3);
+    if (shOp > 0.005) {
+      const vmin = Math.min(S.vw, S.vh);
+      const shScale = 1 - expl * 0.2 - pow * 0.15;
+      shadowEl.style.transform =
+        `translate3d(${(sPt.x - vmin * 0.15).toFixed(1)}px, ${(sPt.y - vmin * 0.03).toFixed(1)}px, 0) scale(${shScale.toFixed(3)})`;
+    }
+
+    /* labels */
+    const labelDist = clamp(S.vw * 0.13, 96, 230);
+    for (const L of labeled) {
+      const ls = 0.455 + L.j * 0.024;
+      const o = smooth(ls, ls + 0.03, lp) * (1 - smooth(0.70, 0.745, lp));
+      if (o < 0.005 && L.o < 0.005 && L.o >= 0) { L.o = o; continue; }
+      L.o = o;
+      L.el.style.opacity = o.toFixed(3);
+      L.line.setAttribute('opacity', (o * 0.9).toFixed(3));
+      L.dot.setAttribute('opacity', o.toFixed(3));
+      if (o > 0.005) {
+        const wp = L.p.g.getWorldPosition(V);
+        const pt = project(wp);
+        const dir = L.p.side === 'r' ? 1 : -1;
+        const lx = pt.x + dir * labelDist;
+        L.el.style.transform =
+          `translate3d(${lx.toFixed(1)}px, ${pt.y.toFixed(1)}px, 0) translate(${dir < 0 ? '-100%' : '0%'}, -50%) scale(${(0.82 + 0.18 * o).toFixed(3)})`;
+        L.line.setAttribute('x1', pt.x.toFixed(1));
+        L.line.setAttribute('y1', pt.y.toFixed(1));
+        L.line.setAttribute('x2', (lx - dir * 6).toFixed(1));
+        L.line.setAttribute('y2', pt.y.toFixed(1));
+        L.dot.setAttribute('cx', pt.x.toFixed(1));
+        L.dot.setAttribute('cy', pt.y.toFixed(1));
+      }
+    }
+
+    renderer.render(scene, camera);
+  }
+
+  resize();
+  return { draw, resize };
+})();
+
+/* --- genesis overlay (works with or without WebGL) --- */
+const pcaps = $$('.pcap');
+const pdots = $$('.pdots i');
+const roomdim = $('#roomdim');
+let lastCap = -1, lastDim = -1;
+
+function capIndex(lp) {
+  return lp < 0.33 ? 0 : lp < 0.42 ? 1 : lp < 0.72 ? 2 : lp < 0.87 ? 3 : 4;
+}
+function updateGenesisOverlay(lp) {
+  const ci = capIndex(lp);
+  if (ci !== lastCap) {
+    lastCap = ci;
+    pcaps.forEach(c => c.classList.toggle('on', +c.dataset.cap === ci));
+    pdots.forEach((d, i) => d.classList.toggle('on', i === ci));
+  }
+  /* the room dims a touch before the lamp powers on, so the finale
+     caption is never light-on-light */
+  const dim = +(smooth(0.855, 0.945, lp) * 0.85).toFixed(3);
+  if (dim !== lastDim) {
+    lastDim = dim;
+    roomdim.style.opacity = dim;
+  }
+}
+
+/* ============================================================
    FRAME UPDATERS
    ============================================================ */
 let lastSkyP = -1;
@@ -528,6 +949,13 @@ function updatePins() {
     /* paint the clamped state; when parked out of range, paint it once
        so the inner transforms never freeze mid-way (e.g. after a re-measure) */
     const lp = clamp(raw, 0, 1);
+    if (pin.type === 'product') {
+      /* the 3D scene needs continuous frames (idle drift), so it's driven
+         from frame() — only the cheap overlay is handled here */
+      pin.raw = raw;
+      if (pin.lastLp !== lp) { pin.lastLp = lp; updateGenesisOverlay(lp); }
+      continue;
+    }
     const parked = raw < -0.05 || raw > 1.05;
     if (parked && pin.lastLp === lp) continue;
     pin.lastLp = lp;
@@ -591,7 +1019,7 @@ function updateCursor() {
   cLabel.style.transform = `translate3d(${cursor.rx + 16}px, ${cursor.ry + 18}px, 0)`;
 }
 
-/* ---------- services peek ---------- */
+/* ---------- features peek ---------- */
 const peek = { el: $('#peek'), x: 0, y: 0, tx: 0, ty: 0, on: false, rot: 0 };
 function updatePeek() {
   if (!FINE || !peek.el) return;
@@ -647,27 +1075,13 @@ function frame(t) {
   updatePeek();
   drawStars();
   drawFx();
-  if (DEBUG) updateDebug();
+
+  /* the 3D lamp renders every frame while its section is near the viewport */
+  if (lamp && productPin && productPin.raw > -0.35 && productPin.raw < 1.3) {
+    lamp.draw(clamp(productPin.raw, 0, 1));
+  }
 
   requestAnimationFrame(frame);
-}
-
-let dbgEl = null;
-function updateDebug() {
-  if (!dbgEl) {
-    dbgEl = document.createElement('pre');
-    dbgEl.style.cssText = 'position:fixed;left:8px;top:60px;z-index:99;background:#000d;color:#0f0;font:13px/1.5 monospace;padding:10px;pointer-events:none;';
-    document.body.appendChild(dbgEl);
-  }
-  const g = pins.find(p => p.type === 'gallery');
-  const r = g.stick.getBoundingClientRect();
-  dbgEl.textContent =
-    `cur ${S.cur.toFixed(0)}  max ${S.max}  p ${S.p.toFixed(3)}\n` +
-    `pin.top ${g.top.toFixed(0)}  len ${g.len.toFixed(0)}  raw ${((S.cur - g.top) / g.len).toFixed(3)}\n` +
-    `stickRect.top ${r.top.toFixed(1)}  rect.h ${r.height.toFixed(1)}\n` +
-    `stickTf ${g.stick.style.transform}\n` +
-    `trackTf ${track.style.transform.slice(0, 48)}\n` +
-    `secH ${galSec.offsetHeight}  trackW ${track.scrollWidth}  galDist ${galDist}  vh ${S.vh}  worldTf ${world.style.transform}`;
 }
 
 /* ============================================================
@@ -708,7 +1122,7 @@ function runCounter(el) {
   const start = performance.now(), dur = 1500;
   (function tick(now) {
     const t = clamp((now - start) / dur, 0, 1);
-    el.textContent = Math.round(lerp(from, to, easeOutExpo(t)));
+    el.textContent = Math.round(lerp(from, to, easeOutExpo(t))).toLocaleString('en-US');
     if (t < 1) requestAnimationFrame(tick);
   })(start);
 }
@@ -793,23 +1207,23 @@ if (FINE && !REDUCED) {
   });
 }
 
-/* services peek */
-const craftSec = $('#craft');
-if (craftSec && FINE) {
-  $$('.row', craftSec).forEach(row => {
+/* features peek */
+const featSec = $('#features');
+if (featSec && FINE) {
+  $$('.row', featSec).forEach(row => {
     row.addEventListener('mouseenter', () => {
       peek.el.className = 'pk' + row.dataset.peek;
       peek.on = true;
     });
   });
-  craftSec.addEventListener('mousemove', e => {
-    const r = craftSec.getBoundingClientRect();
+  featSec.addEventListener('mousemove', e => {
+    const r = featSec.getBoundingClientRect();
     peek.tx = e.clientX - r.left;
     peek.ty = e.clientY - r.top;
     if (!peek.on) { peek.x = peek.tx; peek.y = peek.ty; }
   });
-  craftSec.addEventListener('mouseleave', () => { peek.on = false; });
-  $$('.rows', craftSec).forEach(rows => {
+  featSec.addEventListener('mouseleave', () => { peek.on = false; });
+  $$('.rows', featSec).forEach(rows => {
     rows.addEventListener('mouseleave', () => { peek.on = false; });
     rows.addEventListener('mouseenter', () => { peek.on = true; });
   });
@@ -827,9 +1241,9 @@ function showToast(msg) {
 
 /* playful dead-ends */
 $$('.row').forEach(row => row.addEventListener('click', () =>
-  showToast('That one’s a whole universe — ask us about it ✦')));
+  showToast('Full spec sheet arrives with first light ✦')));
 $$('.dream:not(.dream-cta)').forEach(d => d.addEventListener('click', () =>
-  showToast('This dream is still under NDA ✦')));
+  showToast('Every mood ships with every Lumen ✦')));
 
 /* smooth anchors */
 function scrollToTarget(sel) {
@@ -845,9 +1259,9 @@ $$('a[href^="#"]').forEach(a => {
     history.replaceState(null, '', a.getAttribute('href'));
   });
 });
-$('#yourDream').addEventListener('click', () => {
-  showToast('Smart choice ✦ let’s talk');
-  scrollToTarget('#contact');
+$('#yourBedside').addEventListener('click', () => {
+  showToast('Smart choice ✦ sleep tight');
+  scrollToTarget('#preorder');
 });
 
 /* copy email */
@@ -855,7 +1269,7 @@ $('#copyEmail').addEventListener('click', async () => {
   const email = 'gautamhridyansh@gmail.com';
   try {
     await navigator.clipboard.writeText(email);
-    showToast('email copied ✦ see you in the inbox');
+    showToast('email copied ✦ you’re on the sunrise list');
   } catch {
     showToast(email);
   }
@@ -872,11 +1286,11 @@ setInterval(tickLocal, 30000);
 /* tab title easter egg */
 const baseTitle = document.title;
 document.addEventListener('visibilitychange', () => {
-  document.title = document.hidden ? '💤 the dream pauses…' : baseTitle;
+  document.title = document.hidden ? '🌙 lumen is sleeping…' : baseTitle;
 });
 
 console.log(
-  '%c✦ reverie %c curious, aren’t you? we like that.\n→ gautamhridyansh@gmail.com',
+  '%c☀ lumen %c you looked inside. so does the lamp.\n→ gautamhridyansh@gmail.com',
   'font-weight:bold;font-size:14px;background:linear-gradient(90deg,#ff8d64,#9a6cff);color:#fff;padding:4px 10px;border-radius:99px',
   'color:#9a6cff;font-size:12px;padding:4px'
 );
@@ -888,11 +1302,11 @@ const loader = $('#loader');
 const loadPct = $('#loadPct');
 const loadWord = $('#loadWord');
 const LOAD_WORDS = [
-  'gathering stardust…',
-  'inflating clouds…',
-  'warming the sun…',
-  'teaching pixels to float…',
-  'almost lucid…',
+  'polishing brass…',
+  'blowing the glass…',
+  'catching photons…',
+  'tuning birdsong…',
+  'almost dawn…',
 ];
 let pendingHash = location.hash || '';
 
