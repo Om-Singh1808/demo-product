@@ -1266,7 +1266,7 @@ $('#yourBedside').addEventListener('click', () => {
 
 /* copy email */
 $('#copyEmail').addEventListener('click', async () => {
-  const email = 'gautamhridyansh@gmail.com';
+  const email = 'oms202705@gmail.com';
   try {
     await navigator.clipboard.writeText(email);
     showToast('email copied ✦ you’re on the sunrise list');
@@ -1290,7 +1290,7 @@ document.addEventListener('visibilitychange', () => {
 });
 
 console.log(
-  '%c☀ lumen %c you looked inside. so does the lamp.\n→ gautamhridyansh@gmail.com',
+  '%c☀ lumen %c you looked inside. so does the lamp.\n→ oms202705@gmail.com',
   'font-weight:bold;font-size:14px;background:linear-gradient(90deg,#ff8d64,#9a6cff);color:#fff;padding:4px 10px;border-radius:99px',
   'color:#9a6cff;font-size:12px;padding:4px'
 );
